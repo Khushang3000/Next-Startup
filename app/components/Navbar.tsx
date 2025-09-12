@@ -19,6 +19,21 @@ const Navbar = async () => { //we can make this function an async function cuz t
         </Link>
           {/* gap-* in flexbox (and grid) depends on flex direction and wrapping. gap is spacing b/w the elements within the flexbox */}
           <div className="flex items-center gap-5 text-black">
+            {/* if there is session and user in session only then render these components, we got session from the auth function from nextauth(Oauth), 
+            see it in action only then you'd understand.
+            for the first time it asks you to login to github, once you've logged in to github, it redirects you to the page you were supposed to go to.
+            now if you log out of your application, and try to login again, so you've already authorized the app(i.e you have logged into(not really it actually is authorized) github on your device)
+            the next time you log in, (Github just skips the authentication page)
+            It immediately redirects back to NextAuth with a new authorization code.
+            That’s why you didn’t see the GitHub authorization prompt again.
+            It’s normal: the OAuth session at GitHub is still alive, even though your NextAuth session ended.
+            
+            Logging out of your application clears everything!!! it ends the session!!! (removes the cookie/jwt)
+            //see the diagram on desktop next-auth O-auth
+
+            //also after that see the global.css->@themes
+
+            */}
             { session && session.user ? (
               <>
               <Link href="/startup/create"><span>Create</span></Link>
@@ -65,5 +80,29 @@ const Navbar = async () => { //we can make this function an async function cuz t
     </header>
   )
 }
+// 🔹 Normal HTML <form> behavior
+// In plain HTML, when you click a <button type="submit"> inside a <form>, the browser:
+// Collects all the form fields (<input>, <select>, etc.).
+// Sends them to the server (via GET/POST depending on method and action attributes).
+// Reloads the page with the response.
+
+// 🔹 What Next.js does differently
+// Next.js hijacks that normal form submission and does this:
+// Serialize the form data → grabs everything you entered.
+// Send it to a special Next.js endpoint → this endpoint is auto-generated for your Server Action.
+// Run the function on the server → because of "use server", Next.js ensures that function is never included in the client bundle.
+// Return the result (and optionally re-render the page / do a redirect).
+// "use server" tells Next.js do not bundle this function into client JavaScript.
+// Instead, Next.js gives it a unique action ID, so when the form is submitted, it knows which function to call on the server.
+// From the browser’s perspective, it’s just a form POST. The browser never sees your server function.
+
+// Think of it like:
+// onClick = browser executes your code in JS
+// form action={serverAction} = browser submits a request, Next.js executes your code on the server.
+
+// 🔹 Key benefits
+// No client-side event handler → smaller bundle.
+// Progressive enhancement → still works without JS.
+// Security → server-only code stays on the server (never leaks to client).
 
 export default Navbar
