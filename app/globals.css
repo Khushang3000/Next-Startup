@@ -4,51 +4,7 @@
   --background: #ffffff;
   --foreground: #171717;
 }
-
-@theme {
-  /* basically we'll use these styles by the names that we have defined below through our entire app. hsl(hue saturation lightness)*/
-  /* Screens */
-  --breakpoint-xs: 475px;
-
-  /* Colors 
-  for ex: you just have to do text-100 and that color will be applied, in the figma design you can see the padding the width and everything, just by selecting the component.
-  also, earlier you had to install and define tailwind plugins in the tailwind.config.ts but now you just need to install them(npm install tailwindcss-animate @tailwindcss/typography
-) and tailwind will pick them up directly and just
-  Import them at the bottom of our global.css.
-
-  @import "tailwindcss-animate";
-  @import "@tailwindcss/typography";
-
-  //this was the theming, now for the fonts.
-  //we'll use layout.tsx(app) to setup the fonts
-*/
-  --color-primary-100: #FFE8F0;
-  --color-primary: #EE2B69;
-
-  --color-secondary: #FBE843;
-
-  --color-black-100: #333333;
-  --color-black-200: #141413;
-  --color-black-300: #7D8087;
-  --color-black: #000000;
-
-  --color-white-100: #F7F7F7;
-  --color-white: #FFFFFF;
-
-  /* Font */
-  --font-work-sans: var(--font-work-sans);
-
-  /* Border Radius */
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-
-  /* Shadows */
-  --shadow-100: 2px 2px 0px 0px rgb(0, 0, 0);
-  --shadow-200: 2px 2px 0px 2px rgb(0, 0, 0);
-  --shadow-300: 2px 2px 0px 2px rgb(238, 43, 105);
-}
-
+/* just see the tailwindconfig.ts as we want our custom styling so we can't use global css, tailwindconfig is for those who want custom themes and styling. so we gotta generate it manually since we do want our custom themes n styling. npx tailwindcss init -p. it will generate a js file, you make it ts */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -68,6 +24,3 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-
-@import "tailwindcss-animate";
-@import "@tailwindcss/typography";
