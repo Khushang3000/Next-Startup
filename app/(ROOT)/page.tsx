@@ -8,7 +8,11 @@ export default function Home() {
   //whatever we apply in this layout will only be applied to the pages of this route group (ROOT) only.
   return (
     <>
-      <h1 className="text-2xl">Home</h1>
+    <section className="pink_container pattern rounded-4xl px-6">
+      <h1 className="heading ">Pitch Your Startup!!! <br /> Connect With Entrepreneurs</h1>
+      {/* we use ! in tailwind when we wanna override some styles that were previously provided to this element. */}
+      <p className="sub_heading !max-w-3xl">Submit Ideas, Vote on pitches and get noticed in Virtual Competitions</p>
+    </section>
     </>
   );
 }
