@@ -64,3 +64,31 @@ export default async function Home({searchParams}:{searchParams: Promise<{query:
     </>
   );
 }
+//Now we'll use sanity, but what is sanity?
+// Sanity is a headless CMS (content management system).
+// Headless = it doesn’t control your frontend (UI), only the content.
+// You get a hosted backend + APIs + an admin dashboard (Sanity Studio) where you or non-devs can manage content (posts, products, categories, users, etc.).
+
+//it goes well with nextjs, and you can hand it to your clients for whom you're building the app, and they handle the content.
+//in sanity, we can build a whole operating system around the content, you'll have a content workspace/studio for your application that you can hand over to your client, so they can manage it as well
+//and that studio is built on top of powerful apis that allow you to customize the way you create and manage your content, and they even store it for ya.
+
+//by integrating and deploying sanity with vercel, we can achieve excellent performance metrics, and following features:
+//merged changes instantly go live on their global edge network
+//SSL encryption, asset compression, and cache invalidation are also provided
+//we'll go for the free plan. go on the sanity home page, click start building, signIn.
+//create a project.
+//make sure to create a clean project where you aren't importing any schema from somewhere else.
+
+// create a new studio with sanity cli:
+// npm create sanity@latest -- --project xr24oz99 --dataset production --template clean --typescript --output-path studio-next_startup
+//add config files in the nextjs folder.
+//embed sanity studio
+//add projectid and dataset to env.local
+
+//install the latest version of sanity, to use the live api feature they offer.
+//npm i next-sanity@canary
+
+// now you'll see there have been multiple files and folder generated for us.
+//lets see the sanity cli.ts, next let's see sanityconfig.ts
+// cd studio-next_startup
