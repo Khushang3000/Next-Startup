@@ -1,10 +1,20 @@
 import React from 'react'
 import { formatDate } from '@/lib/utils'
 import { EyeIcon } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { Button } from './ui/button'
+
+
 const StartupCard = ({post}:{post: StartupTypeCard}) => {
+
+    const {_createdAt, views,description, author:{_id:authorId, name}, title, category, image, _id }= post;
+    //here we're destructuring post, now if you see author, we're destructuring it as well!!! 
+    //there's one thing tho, if we directly destructured it like, author:{_id, name}, then there are two conflicting _ids so that's why we renamed author's _id to authorId
+
     //we'll add this StartupTypeCard later once we immplement sanity, as one of it's great features is automatic type checking for documents in our collection
   return (
-    <li className="startup-card group">
+    <li className="startup-card group hover:bg-pink-200">
         {/* Think of it as:
 
 group → marks a parent element as a "group".
@@ -36,15 +46,59 @@ With group, you can cascade hover/focus/active states from parent → children.
  */}
         <div className='flex-between'>
             <p className="startup_card_date">
-                {formatDate(post._createdAt)}
+                {formatDate(_createdAt)}
                 {/* rn we're just using the value of createdAt as a simple static string but what if we could use the js new Date() object, 
                 we wouldn't be able to render it here like normal, so we somehow need to format the date(convert it into string), and for that we'll create a function in the lib/utils.ts */}
                 {/* make sure you change the createdAt to new Date() object in the page.tsx */}
             </p>
             <div className="flex gap-1.5">
                 <EyeIcon className='size-6 text-primary hover:text-pink-700' />
-                <span>{post.views}</span>
+                <span className='text-16-medium'>{views}</span>
             </div>
+        </div>
+        <div className="flex-between mt-5 gap-5">
+          <div className="flex-1">
+            <Link href={`/user/${authorId}`}>
+            {/* line-clamp-1 ensures that user stays on one line */}
+                  <p className="text-16-medium line-clamp-1">
+                    {name}
+                  </p>
+            </Link>
+            <Link href={`/startup/${_id}`}>
+                  <p className="text-26-semibold line-clamp-1">{title}</p>
+            </Link>
+          </div>
+          <Link href={`/user/${authorId}`}>
+          {/* nextjs won't allow us to render the image as it doesn't know if we trust this placehold.co link, so we gotta set it to allow in nextjsconfig.ts */}
+                  <Image src="https://placehold.co/48x48" alt='Placeholder' width={48} height={48} className='rounded-full' />
+          </Link>
+        </div>
+        {/* let's create another link for details */}
+        <Link href={`/startup/${_id}`}>
+                  <p className="startup-card_desc">
+                    {description}
+                  </p>
+                  {/* right here below this p tag we could add an image, but in this case we don't have to. we can also use a regular html image */}
+                  <img src={image} alt="placeholder" className='startup-card_img' />
+        </Link>
+
+        {/* footer of the card */}
+        <div className="flex-between gap-3 mt-5">
+          <Link href={`/?query=${category.toLowerCase()}`}>
+                  <p className="text-16-medium">{category}</p>
+          </Link>
+          <Button className="startup-card_btn" asChild>
+            {/* asChild, 
+            asChild makes the Next.js <Link> act as the button itself.
+
+            All styles (startup-card_btn, hover states, etc.) are applied directly to the <Link>.
+
+            This avoids the invalid <button><a></a></button> nesting which causes accessibility errors in plain html.
+            
+            Good job, now we just have one problem, we're using fake data, that's why in next commit we'll use sanity.
+            it'll be sanity setup*/}
+            <Link href={`/startup/${_id}`}>Details</Link>
+          </Button>
         </div>
     </li>
   )

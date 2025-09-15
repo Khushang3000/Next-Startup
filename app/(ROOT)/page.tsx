@@ -4,10 +4,12 @@ import StartupCard from "@/components/StartupCard";
 
 export default async function Home({searchParams}:{searchParams: Promise<{query: string}>}) {
   const query = (await searchParams).query; //now that we have the query, we can pass it into the searchForm as a prop.
+  
+  
   const posts = [{
     _createdAt: new Date(),//previously we were using "yesterday" normal string.
     views: 55,
-    author: {_id:1}, //i hope yk what _id means(we're using mongodb database. and there will be two models, author and post)
+    author: {_id:1, name:"John"}, //i hope yk what _id means(we're using mongodb database. and there will be two models, author and post)
     _id:1,
     description: "This is a Description",
     image: 'https://www.newegg.com/quantic-dream-s-a-detroit-become-human-pc/p/N82E16832344003',
@@ -17,12 +19,12 @@ export default async function Home({searchParams}:{searchParams: Promise<{query:
 {
     _createdAt: new Date(),//previously we were using "yesterday" normal string.
     views: 55,
-    author: {_id:1}, //i hope yk what _id means(we're using mongodb database. and there will be two models, author and post)
-    _id:1,
+    author: {_id:2,name:"Alice"}, //i hope yk what _id means(we're using mongodb database. and there will be two models, author and post)
+    _id:2,
     description: "This is a Description",
     image: 'https://www.newegg.com/quantic-dream-s-a-detroit-become-human-pc/p/N82E16832344003',
     category: "Robots",
-    title: "We Robots"
+    title: "Clothing Startup"
   }]
 
   return (

@@ -62,7 +62,7 @@
     }
 
     .pink_container {
-        @apply w-full bg-pink-300 min-h-[530px]  flex justify-center items-center flex-col py-10 px-6;
+        @apply w-full bg-pink-300 min-h-[530px]  flex justify-center items-center flex-col py-10 px-6; 
     }
 
     .tag {
@@ -148,7 +148,7 @@
 
     /* startupcard */
     .startup-card {
-        @apply bg-white border-[5px] border-black py-6 px-5 rounded-[22px] shadow-2xs hover:border-2 transition-all duration-500 hover:shadow-xl hover:border-pink-800 ;
+        @apply bg-white border-[5px] border-black py-6 px-5 rounded-[22px] shadow-2xs hover:border-y-pink-200 hover:border-t-2 hover:border-x-pink-300 hover:border-x-8 transition-all duration-500 hover:shadow-xl ;
     }
 
     .startup-card_date {
@@ -214,6 +214,7 @@
     }
 
     .pattern {
+        
         background-image: linear-gradient(
                 to right,
                 transparent 49.5%,
