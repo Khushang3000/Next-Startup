@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+#Idea
+/Idea_app
+
 # next.js
 /.next/
 /out/
