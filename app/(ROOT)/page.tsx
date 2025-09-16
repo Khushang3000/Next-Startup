@@ -8,8 +8,13 @@ import { sanityFetch, SanityLive} from "@/lib/live";
 
 export default async function Home({searchParams}:{searchParams: Promise<{query: string}>}) {
   const query = (await searchParams).query; //now that we have the query, we can pass it into the searchForm as a prop.
+
+  const params = {search: query || null}//now we'll pass this params into our sanityFetch function.
   
-  const {data: posts}=await sanityFetch({query: STARTUP_QUERY})//this is how we'll fetch now, from the liveContent api of sanity.
+  const {data: posts}=await sanityFetch({query: STARTUP_QUERY, params})//this is how we'll fetch now, from the liveContent api of sanity.
+  //now go into the startup query and modify it in such a way that if there is a search then it should return the matching search otherwise it should return everything in the descending order.
+
+
   //this will make sure to revalidate this page whenever new changes are made.
   //oh and btw here we're destructuring the data and renaming it to posts.
   //But you'll notice that we're still not using the SanityLive variable, well it's not a variable but a component(self closing tag)
@@ -17,6 +22,11 @@ export default async function Home({searchParams}:{searchParams: Promise<{query:
   //now when you add a new document through the studio, you'll see that document getting added to the page live!!!
   //and it'll show up as the first one on the list, because we made the order-desc(descending) in the startup query
   // and they were being sorted on the basis of _createdAt.
+
+  //now let's also implement the realtime search.
+  //so when you type something in the search box, it actually modifies the url,
+  //so first we need to retrieve that query within our application. and then further filter the fetch that we're trying to make
+  //we can do that thing by creating a new variable called params, see below the query declaration.
 
 
 
