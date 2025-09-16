@@ -18,6 +18,28 @@ export type StartupCardType = Omit<Startup,"author"> & {author? : Author}//autho
 //now next thing we'll do is dive a bit into how nextjs caches our data and how we can further customize it depending on the type of our application.
 //we'll do it for the kind of application which has to show the new posts immediately
 
+//remember when we set useCDN to true in the client.ts?
+//that is ISR.
+//incremental static regeneration.
+//see screenshots 3 and 4 combined.
+//that's nextjs tho, but in sanity it works the same.
+//let's see that in action, go to sanity studio on localhost3000, create a new startup document, copy the prev one by clicking the three dots on it, 
+//click on create a new doc, and on it's three dots, paste it in the new document
+//ofc you'd need to change the slug too. so add -1 to it and hit publish. now if you go to the home page, it won't appear,
+//Not live, not even after many many refreshes. why is that happening? because it's cached(refer to the diagram in ss3 n ss4.)
+//so only if we reload the page after 60 seconds it will appear, 
+//here's what i mean, when we made the first request, 1startup was already stored in the sanity studio n database.
+//so it got loaded, now when we created another startup, it is stored in the sanity studio/database.
+//but since we made the reload request in under 60sec, the fetching will be happening on the cached data!!! not the new original data(where new startup is added)
+//cached data will update only after 60sec.
+//go to client.ts and set useCDN to false to always get the new data.(only after you hit refresh btw)
+//so if you don't want realtime data just set useCdn to false.
+//in some cases it's better to get data from the cached mem. as it is faster.
+
+//but why even do that when we can get the real time data without REFRESHING!!! 
+//let's do that in the next commit.
+
+
 
 const StartupCard = ({post}:{post: StartupCardType}) => {
 
