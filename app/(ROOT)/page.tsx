@@ -1,31 +1,63 @@
 import Image from "next/image";
 import SearchForm from "../../components/SearchForm";
 import StartupCard from "@/components/StartupCard";
+import { STARTUP_QUERY } from "@/lib/queries";
+import { client } from "@/sanity/lib/client";
+import { StartupCardType } from "@/components/StartupCard";
 
 export default async function Home({searchParams}:{searchParams: Promise<{query: string}>}) {
   const query = (await searchParams).query; //now that we have the query, we can pass it into the searchForm as a prop.
   
-  
-  const posts = [{
-    _createdAt: new Date(),//previously we were using "yesterday" normal string.
-    views: 55,
-    author: {_id:1, name:"John"}, //i hope yk what _id means(we're using mongodb database. and there will be two models, author and post)
-    _id:1,
-    description: "This is a Description",
-    image: 'https://www.newegg.com/quantic-dream-s-a-detroit-become-human-pc/p/N82E16832344003',
-    category: "Robots",
-    title: "We Robots"
-  },
-{
-    _createdAt: new Date(),//previously we were using "yesterday" normal string.
-    views: 55,
-    author: {_id:2,name:"Alice"}, //i hope yk what _id means(we're using mongodb database. and there will be two models, author and post)
-    _id:2,
-    description: "This is a Description",
-    image: 'https://www.newegg.com/quantic-dream-s-a-detroit-become-human-pc/p/N82E16832344003',
-    category: "Robots",
-    title: "Clothing Startup"
-  }]
+
+  const posts = await client.fetch(STARTUP_QUERY);// this client is the client that created the sanity project.
+  console.log(JSON.stringify(posts, null, 2));//null and 2 just create some additional spacing.
+  //so basically now in your ui, you'll see real data that's being fetched from sanity's database.
+  //soon enough we'll also create a create post page for the users as we don't want them to go to sanity vision and create things there.
+  //now the thing that's been bugging the most, StartupCardType, we can define types manually but we should know everything like which properties are optional, which are not
+  //instead we'll use sanity's own tool generates types manually
+  //sanity typegen - you can go to docs and read about it as well. there's also a video there which tells you how to exactly create types.
+  //1step is to extract the schemas we have already created(startup and author)
+  //to extract them we gotta run an additional command npx sanity@latest schema extract --path=./sanity/extract.json
+  // and they'll extract it to extract.json file.
+  //2step is to create a new file in the root of our app(inside next-startup folder) called sanity-typegen.json
+  //there you can add one configuration object, you can copy it from sanity learn(google.)
+  //that configuration will scan the application for all groqq queries to create types, additionally it'll also use the extract.json from the prev command we ran, and it'll write a new types.ts file with our other utilities
+  //and DO MAKE SURE THAT THE PATHS THERE ARE CORRECT ACCORDING TO YOUR APPLICATION.
+  //(go there and see for yourself)
+  //then just run the command npx sanity@latest typegen generate
+  //now when we add more queries or generate more types, we'll have to re-run this command.
+  //OFC IF WE DON'T AUTOMATE IT, WHICH WE WILL.
+  //go to package.json, scripts and add a few new scripts(you can get those scripts from the sanity learn(google))
+    // "predev": "npm run typegen",
+    // "prebuild": "npm run typegen",
+    // "typegen": "sanity schema extract --path=./sanity/extract.json && sanity typegen generate"
+  //now just run npm run typegen
+  //now just run that command when you want to generate new types.
+  //finally let's define the type for the startup card.
+  //to do that go to the startupcard.tsx 
+
+
+
+  // const posts = [{
+  //   _createdAt: new Date(),//previously we were using "yesterday" normal string.
+  //   views: 55,
+  //   author: {_id:1, name:"John"}, //i hope yk what _id means(we're using mongodb database. and there will be two models, author and post)
+  //   _id:1,
+  //   description: "This is a Description",
+  //   image: 'https://www.newegg.com/quantic-dream-s-a-detroit-become-human-pc/p/N82E16832344003',
+  //   category: "Robots",
+  //   title: "We Robots"
+  // },
+  // {
+  //     _createdAt: new Date(),//previously we were using "yesterday" normal string.
+  //     views: 55,
+  //     author: {_id:2,name:"Alice"}, //i hope yk what _id means(we're using mongodb database. and there will be two models, author and post)
+  //     _id:2,
+  //     description: "This is a Description",
+  //     image: 'https://www.newegg.com/quantic-dream-s-a-detroit-become-human-pc/p/N82E16832344003',
+  //     category: "Robots",
+  //     title: "Clothing Startup"
+  //   }]
 
   return (
     <>
