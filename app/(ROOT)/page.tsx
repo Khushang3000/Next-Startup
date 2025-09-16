@@ -2,15 +2,26 @@ import Image from "next/image";
 import SearchForm from "../../components/SearchForm";
 import StartupCard from "@/components/StartupCard";
 import { STARTUP_QUERY } from "@/lib/queries";
-import { client } from "@/sanity/lib/client";
+// import { client } from "@/sanity/lib/client";
 import { StartupCardType } from "@/components/StartupCard";
+import { sanityFetch, SanityLive} from "@/lib/live";
 
 export default async function Home({searchParams}:{searchParams: Promise<{query: string}>}) {
   const query = (await searchParams).query; //now that we have the query, we can pass it into the searchForm as a prop.
   
+  const {data: posts}=await sanityFetch({query: STARTUP_QUERY})//this is how we'll fetch now, from the liveContent api of sanity.
+  //this will make sure to revalidate this page whenever new changes are made.
+  //oh and btw here we're destructuring the data and renaming it to posts.
+  //But you'll notice that we're still not using the SanityLive variable, well it's not a variable but a component(self closing tag)
+  //that you will render at the bottom of this page(see the return statement of this Home function)
+  //now when you add a new document through the studio, you'll see that document getting added to the page live!!!
+  //and it'll show up as the first one on the list, because we made the order-desc(descending) in the startup query
+  // and they were being sorted on the basis of _createdAt.
 
-  const posts = await client.fetch(STARTUP_QUERY);// this client is the client that created the sanity project.
-  console.log(JSON.stringify(posts, null, 2));//null and 2 just create some additional spacing.
+
+
+  // const posts = await client.fetch(STARTUP_QUERY);// this client is the client that created the sanity project.
+  // console.log(JSON.stringify(posts, null, 2));//null and 2 just create some additional spacing.
   //so basically now in your ui, you'll see real data that's being fetched from sanity's database.
   //soon enough we'll also create a create post page for the users as we don't want them to go to sanity vision and create things there.
   //now the thing that's been bugging the most, StartupCardType, we can define types manually but we should know everything like which properties are optional, which are not
@@ -93,6 +104,7 @@ export default async function Home({searchParams}:{searchParams: Promise<{query:
           }
         </ul>
     </section>
+    <SanityLive />
     </>
   );
 }

@@ -38,6 +38,12 @@ export type StartupCardType = Omit<Startup,"author"> & {author? : Author}//autho
 
 //but why even do that when we can get the real time data without REFRESHING!!! 
 //let's do that in the next commit.
+//for that we'll use sanity's liveContent api.(go google)
+//to implement it within our application, we can run 
+//npm i server-only
+//this will help us ensure that a specific module can only be used in server components.
+//next we'll create a new utility file, within lib
+//live.ts
 
 
 
