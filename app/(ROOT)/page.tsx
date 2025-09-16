@@ -1,7 +1,7 @@
 import Image from "next/image";
 import SearchForm from "../../components/SearchForm";
 import StartupCard from "@/components/StartupCard";
-import { STARTUP_QUERY } from "@/lib/queries";
+import { STARTUP_QUERY } from "@/sanity/lib/queries";
 // import { client } from "@/sanity/lib/client";
 import { StartupCardType } from "@/components/StartupCard";
 import { sanityFetch, SanityLive} from "@/lib/live";

@@ -13,7 +13,17 @@ const nextConfig: NextConfig = {
       //later-on we'll remove this dangerously allow svg, but keep in mind that later on these placeholder images will be comming from different sources, and they won't be in svg
       //now go back to startup card.
     }]
-  }
+    
+  },
+  //PPR
+  experimental: {//this is experimental rn but soon it'll become stable.
+      ppr: 'incremental'
+  },
+  devIndicators: {
+    appIsrStatus: true,
+    buildActivity: true,
+    buildActivityPosition: "bottom-right"
+  }//these will help us visualize what's happening with ppr. now go to the details page.tsx see experimental_ppr
 };
 
 export default nextConfig;
