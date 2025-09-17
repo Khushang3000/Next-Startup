@@ -1,7 +1,10 @@
 //yk this is the details page, and for different startups there's gonna be different content, so we'll just sort startup's details page with that [id] that we get here through params
 //if you see the startup card's details section you'll realise that that details leads you to this page.
+import { formatDate } from '@/lib/utils';
 import { client } from '@/sanity/lib/client';
 import { STARTUP_BY_ID_QUERY } from '@/sanity/lib/queries';
+import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import React from 'react'
 
@@ -47,7 +50,38 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     //now if all checks are passed, then we can render something like posts.title below in the component
   return (
     <>
-    <h1 className="text-3xl">{post.title}</h1>
+    <section className="pink_container !min-h-[1px]">
+      <p className="tag">{formatDate(post?._createdAt)}</p>
+     <h1 className="heading text-3xl">{post.title}</h1>
+     <p className="sub-heading !max-w-5xl ">{post.description}</p>
+    </section>
+    <section className="h-[20vh] w-[60vw] justify-self-center mt-1">
+      <img src={post.image} alt="Thumbnail" className='w-[80vw] h-[60vh] rounded-xl' />
+      <div className="space-y-5 mt-10 max-w-4xl mx-auto">
+        <div className="flex-between gap-1">
+          <Link href={`/user/${post.author?._id}`} className='flex gap-2 items-center mb-3'>{/**Link to author details page. */}
+          <div className="relative w-16 h-16 rounded-full overflow-hidden drop-shadow-lg drop-shadow-amber-600">
+          <Image src={post.author.image} alt="Avatar" fill className='object-cover' />
+          {/* nextjs has some problems specifically with the image tag, as it overrides some of your own styles so, it's better to render that image tag within a div and provide styling to that div
+          now you can provide object-cover classname to that Image tag to make sure that image keeps the aspect ratio and fills the container(there are other properties like object-fit contain wrap nowrap overflow that you can learn about later somewhere)
+          also, either you can provide height and width properties on the Image tag, to give custom height and width, i prefer to provide fill properties as it makes the 
+          image tag's image fill the container containing it.
+          also, giving width and height in vw and vh are better in most cases as they ALWAYS work, even if you don't wanna use them, you can try seeing what they do and then use what way you want to provide width and height manually
+          like rem % px, n more.
+          another thing, flex has defauld direction row-> so justify there makes content move (in main origin)left-right(horizontally), align moves content (in cross-origin)vertically(top-bottom)
+          flex-col is exactly opposite as then the main and cross origins are swapped
+          so justify still moves on main origin but main origin is (top-bottom)vertical now, similarly align moves on cross-origin which is horizontal now(left-right.)
+          we can also provide how many elements we want in the main origin, like flex-row-4 so 4 elements per row only. */}
+          </div>
+          <div>
+            <p className="text-20-medium">{post.author.name}</p>
+            <p className="text-16-medium !text-black">@{post.author.username}</p>
+            {/* in next commit we'll add category tag. */}
+          </div>
+          </Link>
+        </div>
+      </div>
+    </section>
     </>
   )
 }

@@ -20,10 +20,12 @@ const nextConfig: NextConfig = {
       ppr: 'incremental'
   },
   devIndicators: {
-    appIsrStatus: true,
-    buildActivity: true,
-    buildActivityPosition: "bottom-right"
+  //   appIsrStatus: true,
+  //   buildActivity: true,
+  //   buildActivityPosition: "bottom-right"//these three are depricated btw.
+  position: "bottom-right"
   }//these will help us visualize what's happening with ppr. now go to the details page.tsx see experimental_ppr
+  
 };
 
 export default nextConfig;

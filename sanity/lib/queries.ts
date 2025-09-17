@@ -47,7 +47,7 @@ export const STARTUP_BY_ID_QUERY = defineQuery(
         title,
         slug, 
         _createdAt,
-        author -> {_id, name, image, bio, },    //what properties we want from author.
+        author -> {_id, name, image, bio, username },    //what properties we want from author.
         views,
         description,
         category,
