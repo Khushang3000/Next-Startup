@@ -20,6 +20,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.544.0",
+    "markdown-it": "^14.1.0",
     "next": "^15.6.0-canary.10",
     "next-auth": "^5.0.0-beta.29",
     "next-sanity": "^10.0.17-canary.1",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.19.13",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19",

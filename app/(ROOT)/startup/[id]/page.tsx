@@ -6,7 +6,15 @@ import { STARTUP_BY_ID_QUERY } from '@/sanity/lib/queries';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import React from 'react'
+import React, { Suspense } from 'react'
+
+import MarkdownIt from 'markdown-it';
+import { Skeleton } from '@/components/ui/skeleton';
+import View from '@/components/View';
+
+const md = MarkdownIt();
+
+
 
 export const experimental_ppr = true;//now we can use sanity's client api to perform isr(incremental site regeneration) to get startup details
 //we can do that by fetching the post based on the provided id. see in page function below, the posts variable.
@@ -42,12 +50,18 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     //our string wasn't the one that we were expecting, and same case happened when we passed the same string in params of vision for the first time!!!
     //now in next commit we'll design the ui of details page.
 
+    
     //isr
     const post = await client.fetch(STARTUP_BY_ID_QUERY, {id})//here id is sent through params.
     if(!post){
       return notFound();//from next/navigation
     }
     //now if all checks are passed, then we can render something like posts.title below in the component
+
+
+    //markdown-it for parsing the markdown values:
+    const parsedContent = md.render(post?.pitch || "")//parse the markdown content if it's there, or just return an empty string if it doesn't exist.
+    //random note: to use experimental ppr, you should install latest version of canary, which means that run npm i next@canary.
   return (
     <>
     <section className="pink_container !min-h-[1px]">
@@ -78,9 +92,42 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
             <p className="text-16-medium !text-black">@{post.author.username}</p>
             {/* in next commit we'll add category tag. */}
           </div>
-          </Link>
+        </Link>
+            <p className="category-tag">{post.category}</p>
         </div>
+        <h3 className="text-30-bold">Startup Details</h3>
+        {/* we need to render ptich here below, and pitch comes in a markdown format, so we gotta parse it first, so we'll install an additional package for it.
+        npm i markdown-it --force(if it poses a problem)
+        npm install --save-dev @types/markdown-it(for installing types.)
+        //and then import it here in this file, make a parsedContent variable and see what we're doing. above */}
+        {parsedContent? (
+          //break-all applies work-break property
+          <article className='prose max-w-4xl font-work-sans break-all'
+          // react normally escapes any html, to prevent xss attacks, cross side scripting attacks, rendering the content that displays text.
+          //but when you want to insert raw html like the parsedMarkdown, we must use dangerouslySetInnerhtml to tell react that the content is safe and should be rendered as html
+          dangerouslySetInnerHTML={{__html: parsedContent}}
+          />
+        ):
+        (
+          <p className="no-result">No details provided.</p>
+        )
+        }
       </div>
+      <hr className="divider" />
+      {/* TODO: */}
+      {/* Editor Recommended Startups */}
+
+
+      {/* Everything we've rendered so far was static content, now time for ppr.
+      now we'll develop a section of this same page which needs realtime updates, so it'll be completely dynamic
+      when you wanna add a dynamic block, you need to wrap it within a <Suspense> tag comming from react. where we can also provide fallback in case we can not render something new, or to show something while that real content hasn't been fetched.
+      so for that placeholder we'll use a Skeleton tag comming from shadcn, install it by npx shadcn@latest add skeleton */}
+      
+      <Suspense fallback={<Skeleton className='view-skeleton'/>}>
+        {/* in here comes the code that'll be rendered dynamically, in components folder create a new file named view.tsx, see it and come back
+        this view will basically show the live count of views that this startup has got. so this view will update in realtime */}
+        <View id={id}/>
+      </Suspense>
     </section>
     </>
   )

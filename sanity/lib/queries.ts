@@ -51,7 +51,8 @@ export const STARTUP_BY_ID_QUERY = defineQuery(
         views,
         description,
         category,
-        image
+        image,
+        pitch
     }
     `
 )//now let's go to the startup details page and use this query, oh and btw we can use live Content api of sanity here but we choose not to
