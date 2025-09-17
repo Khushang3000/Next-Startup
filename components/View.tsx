@@ -1,7 +1,12 @@
 import React from 'react'
 import Ping from './Ping'
+import { client } from '@/sanity/lib/client'
+import { STARTUP_VIEWS_QUERY } from '@/sanity/lib/queries'
 
-const View = ({id}:{id: string}) => {
+const View =async ({id}:{id: string}) => {
+  //renaming views to totalViews
+  const {views: totalViews }= await client.withConfig({useCdn: false}).fetch(STARTUP_VIEWS_QUERY,{id});//we can also add useCdn thing here manually, useCdn false means that n.o of views will update automatically.
+  //now the only thing we need to do is update the views everytime a user visits this page.that's just the incremental login which will just update the database, we have added the dynamic content here as views using cdn tho.
   return (
     <div className='view-container'>
         {/* these top and right from div below are offsets, i.e that element will be absolute-the element is taken out of the normal document flow and positioned relative to the nearest ancestor with relative (or absolute/fixed/sticky).
@@ -19,7 +24,8 @@ const View = ({id}:{id: string}) => {
             <Ping/>
         </div>
         <div className="view-text">
-            <span className="font-black">100views</span>
+          {/* now we gotta write a seperate sanity query for getting live views, yk where(queries.ts), and then we'll make a request of views from this view.tsx file. */}
+            <span className="font-black">{totalViews}</span>
         </div>
     </div>
   )
