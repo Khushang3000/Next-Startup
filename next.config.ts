@@ -23,7 +23,10 @@ const nextConfig: NextConfig = {
   //   appIsrStatus: true,
   //   buildActivity: true,
   //   buildActivityPosition: "bottom-right"//these three are depricated btw.
-  position: "bottom-right"
+
+  
+
+  position: "top-left"
   }//these will help us visualize what's happening with ppr. now go to the details page.tsx see experimental_ppr
   
 };

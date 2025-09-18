@@ -71,7 +71,7 @@ export const STARTUP_BY_ID_QUERY = defineQuery(
 
 //query for views, $id is the id we get through params., now let's make a req to this query in View.tsx
 export const STARTUP_VIEWS_QUERY = defineQuery(`
-    *[_type == "startup && _id == $id][0]{
+    *[_type == "startup" && _id == $id][0]{
     _id, views
     }
     `)
