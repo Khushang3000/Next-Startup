@@ -37,7 +37,13 @@ const View =async ({id}:{id: string}) => {
   //now the diffference is how we're using clients, one is write-Client.ts where useCdn is false, so there the client get's to make changes and the changes are live.
   //and other is client.ts where we have set useCdn true, so now if you see, the views update as soon as there's a change,(Dynamic), as we're using after.
   //and the other part is using ISR(client), where if we change the name of the startup, then the changes will only reflect after 60sec!!!(here we're explicitly setting it to false, see await client above), if we set useCdn false then we'll get live updates
-  //that's partial pre-rendering for ya.
+  //that's partial pre-rendering for ya. Now before we make a startup publish page for user, we must first authenticate the user.
+  //so see the author authentication flow ss,
+  //basically based on the session, from O-auth, if we see that a user is authenticated or not, if he is is authenticated from O-auth,
+  //we gotta see if he exists as an author in the sanity database, if not then we create him in sanity database.
+
+  //to do that we'll create a sanity query to check if an author with a specific github id exists.
+  //go to queries.ts and then auth.ts(where we'll make use of callbacks to call this query and get user's data to make him an author or if he already exists then allow him to create posts)
 
   after(async ()=>{
     await writeClient.patch(id).set({views: totalViews+1}).commit();//calling the writeClient action here.
