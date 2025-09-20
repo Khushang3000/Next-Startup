@@ -88,4 +88,4 @@ export const AUTHOR_BY_GITHUB_ID_QUERY = defineQuery(`
     image,
     bio
     }
-    `)
+    `)//_id is the db AUTHOR id, and id is the GITHUB id.

@@ -38,8 +38,11 @@ export const author = defineType({
         }),defineField({
             name: "bio",
             type: "text"
+        }),defineField({
+            name: "email",
+            type: "string",
         }),
-    ],
+        ],
     preview: {
         select: {
             title: "name"//THIS WILL ALLOW US TO SELECT THOSE AUTHORS BY NAME AND PREVIEW THEM

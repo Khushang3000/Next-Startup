@@ -45,6 +45,7 @@ export type Author = {
   username?: string;
   image?: string;
   bio?: string;
+  email?: string;
 };
 
 export type Markdown = string;

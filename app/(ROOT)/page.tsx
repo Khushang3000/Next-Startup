@@ -5,6 +5,7 @@ import { STARTUP_QUERY } from "@/sanity/lib/queries";
 // import { client } from "@/sanity/lib/client";
 import { StartupCardType } from "@/components/StartupCard";
 import { sanityFetch, SanityLive} from "@/lib/live";
+import { auth } from "@/auth";
 
 export default async function Home({searchParams}:{searchParams: Promise<{query: string}>}) {
   const query = (await searchParams).query; //now that we have the query, we can pass it into the searchForm as a prop.
@@ -79,6 +80,41 @@ export default async function Home({searchParams}:{searchParams: Promise<{query:
   //     category: "Robots",
   //     title: "Clothing Startup"
   //   }]
+
+
+  // #################################################################################################
+  //getting session
+    const session = await auth();
+    // console.log(session.id)// if you try to use this now, then ts will give you an error that session is possibly null
+    //to fix that we can create a typescript declaration file within our Next-startup folder. next-auth.d.ts see it and come back.
+    console.log(session?.id);//now typescript knows that session has an id, but if you put the import in the typedec file then it'd know that there's id on session
+    //but then you'd get errors in auth.ts as then your declarations would've overridden the SESSION AND JWT so then you'd get errors there,
+    // so the best thing is to just put a session? rather than directly doing session.
+    //rn you might not see the id's value, as when we were implementing this functionality we were left logged in so, to fix that logout and then login again.
+    //so just logout and then login again.
+    //now when you login one more time you'll get another error(Server error. problem with server configuration and if you look at console you'll see error comming from auth and it'd say can't read properties of null(reading: '_id'))
+    //so go to auth.ts and add a ? on user.id like user?._id, while assigning user's id to token. to indicate that sometimes user just might not be there.
+    //but why would it not be there?
+    //we do have the account and profile, then why?(keep looking in auth.ts if condition is there which checks account and profile)
+    //let's check the github_id_query then, on inspecting it, it looks good to me.
+    //so let's give it another shot, but before we do, we must make sure that the author hasn't been already generated. or if it has then you'd have to clear it using the sanity studio.
+
+    // remember there's two types of seesions here, our app's sesssion which clears when the user logs out, but the github's session isn't cleared until that user logs out from github
+    //now if we went with the custom credentials thing here, and the user logged out once, then he'd have to put his info again to log in again.(OH AND BTW SEE KHUSHANG FROM THE FUTURE IN AUTH.TS WHILE CREATING CLIENT.)
+    //now if we log in again and visit the sanity studio, author, we can see all the fields automatically get populated like id, bio(if there is any) and many more.    
+    //now if we check session?.id's value, it's still undefined.
+    //we create a user on signIn and that user indeed gets created in db, but when we try to read that session.id value within jwt it returns undefined even tho the user has been created successfully in sanity studio.
+    //this issue is rooted behind how sanity or more specifically nextjs works behind the scenes. 
+    //Specifically their caching mechanisms.
+
+    //when we first created a new user, after confirming that the user doesn't already exist, sanity successfully added the user. however when we immediately tried to retrieve that user
+    //within 60sec of creation, the query didn't return any results(undefined) this is because the read query was made too soon after the user creation and sanity and nextjs cache weren't updated yet.
+    //this is a common challenge when working with frameworks and libraries while caching data.
+    //so let's fix that cache. updation, (just useCdn: false) to BOTH signIn and Jwt callbacks. so it'll be like client.withConfig({useCdn: false}).fetch(Query, {params})
+    //like that. go have a look and come back.
+    //now go back to sanity studio delete the existing user, logout and then login fresh as a new user, you WILL SEE THE SESSION.ID ON CONSOLE instantly
+    //also before you login, make sure to clear cache and cookies. you can do that by inspect->application->cookies and cache, clear them.
+    //now next thing we'll do is provide the user with a form to create a startup without going to the sanity studio.
 
   return (
     <>
