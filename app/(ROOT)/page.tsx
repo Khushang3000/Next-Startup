@@ -116,6 +116,8 @@ export default async function Home({searchParams}:{searchParams: Promise<{query:
     //also before you login, make sure to clear cache and cookies. you can do that by inspect->application->cookies and cache, clear them.
     //now next thing we'll do is provide the user with a form to create a startup without going to the sanity studio.
 
+    //create a new route app/root/startup/create/page.tsx go there.
+
   return (
     <>
     <section className="pink_container pattern rounded-4xl px-6">
