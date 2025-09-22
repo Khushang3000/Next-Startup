@@ -2,8 +2,8 @@
 //WHENEVER NEXTJS CANARY VERSION CAUSES ERROR ON INSTALLNG SOMETHING, JUST ADD --legacy-peer-deps and then install it.
 
 
-"use client"
-import React from 'react'
+"use client"//cuz client will submit data in the form and the data will come from the client side not server. AND ALSO WE WILL USE HOOKS.
+import React, { useActionState } from 'react'
 import { Input } from './ui/input'
 // import { Toaster } from './ui/sonner'//(1)
 import { Toaster } from 'sonner'//(2)
@@ -12,17 +12,114 @@ import { Textarea } from './ui/textarea'
 import MDEditor from '@uiw/react-md-editor'
 import { Button } from './ui/button'
 import { Send } from 'lucide-react'
+import { formSchema } from '@/lib/validation'
+import {z} from 'zod';
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 const StartupForm = () => {
-
+    
     //here useState uses array destructuring, [errors, seterrors], as it returns a array or to be more specific, a tuple.
     const [errors, seterrors] = useState <Record<string,string>>({})//this record string,string specifies the return type of this useState function
     // <Record<string,string>> so this is basically the type of state that useState can recieve and return, as this is a generic, don't confuse it with typescript types.
-
+    
     //markdown pitch
     const [pitch, setpitch] = useState("")
 
-    //later-on we'll extract this value dynamically to know whether the user is submitting the form or not.
-    const isPending = false;
+    const router = useRouter();//comming from next-navigation. this is the app router and we should always use this router instead of the router(for new nextjs projects) from next-router or someplace else as that is older.
+    
+    //for form validation we'll use ZOD, a simple ts first schema validation with static type interference, to implement it create a new file in the lib folder->validation.ts
+    const handleFormSubmit = async (prevState: any, formData: FormData)=>{
+        try {
+            const formValues = {
+                title: formData.get("title") as string,
+                description: formData.get("description") as string,
+                category: formData.get("category") as string,
+                link: formData.get("link") as string,
+                pitch
+                // pitch: formData.get("pitch") as string
+                //DON'T NEED TO GET THE PITCH AS WE'RE MANAGING IT AS A SEPERATE INDIVISUAL STATE.
+            }
+
+            await formSchema.parseAsync(formValues)//taking the formValues and compare them with the formSchema and see if they match.
+            //             parseAsync(formValues) runs validation:
+            // It checks if formValues matches the shape and rules of formSchema.
+            // If everything is valid ✅ → it resolves and gives you the typed, validated data back.
+            // If anything is invalid ❌ → it throws a ZodError.
+
+            console.log(formValues);//logging to see if we even get the form values.REMEMBER SINCE THIS IS A CLIENT SIDE COMPONENT, THE CONSOLE LOG WILL BE SHOWN ON THE 
+            // CLIENT'S BROWSER.
+           
+           
+            // const result = await createIdea(prevState, formData, pitch)//WE'LL IMPLEMENT THIS LATER.
+            //console.log(result)
+
+            //we'll show a shadcn toast, that'll be a alert component saying something wen't wrong.
+            //see sonner.tsx component that we created to make a toast component.(NOW GO TO THE LAYOUT.TSX OF THE PROJECT FOLDER AND RIGHT BELOW CHILDEREN JUST RENDER THAT TOASTER COMPONENT AND COME BACK HERE TO SEE HOW WE USE IT.)
+
+            // if(result.status === "SUCCESS"){//showing toast for success.
+            //     toast("Success",{
+            //         description: 'Your Startup Pitch has been created successfully!!',
+            //     })
+
+
+            //     //Once that successful submission happens we wanna redirect the user to that startup details page.
+            //     //for that we'll use useRouter
+
+            //     router.push(`/startup/${result.id}`)//since we're showing toast, we'll redirect the user to his startup page.
+            // }
+
+            // return result;
+        } catch (error) {
+            if(error instanceof z.ZodError){
+            
+            //                 The output of z.flattenError() is an object with two main properties:
+            // formErrors: An array of strings containing any top-level errors that don't belong to a specific field.
+            // fieldErrors: An object where the keys are the field names (e.g., title, description) and the values are arrays of error messages for that specific field.
+            
+                const flattenedError = z.flattenError(error);
+                const fieldErrors = flattenedError.fieldErrors;
+
+                seterrors(fieldErrors as unknown as Record<string,string>) //TypeScript is strict about type assertions. It won't let you cast a type to a completely unrelated one directly. For instance, you can't cast a number to a string using as.
+                toast("Event has been created",{
+                    description: 'Please Check Your Inputs and Try Again.',
+                    // action: {
+                    //     label: 'Undo',
+                    //     onClick: () => console.log('Undo action triggered'),
+                    // },
+                    // style: {
+                    //     backgroundColor: '#4a90e2', // Example: a blue background
+                    //     color: 'white',              // Example: white text
+                    // }
+                })
+                return {...prevState, error: "Validation Failed", status: "ERROR"}//returning prevState with modified values of error and status.
+            }
+// The as unknown part is a trick to get around this restriction. The unknown type is the "top" type in TypeScript, meaning any value can be assigned to unknown without a type error. By casting your variable to unknown first, you're essentially telling the compiler, "I know what I'm doing, just forget about the original type for a moment."
+// Type Casting (in other languages)
+// In languages like C++ or Java, type casting often involves a runtime conversion. This means the program might actually create a new value in a different memory format. For example, casting a float to an int will physically change the data, truncating the decimal. This can sometimes lead to runtime errors if the conversion fails.
+
+// Type Assertion (in TypeScript)
+// In TypeScript, the as keyword performs a type assertion. It's purely a compile-time instruction to the compiler. You are telling the compiler, "Trust me, I know this variable is of this type, even if you can't prove it." TypeScript doesn't change the underlying data at all; it just stops reporting a type error so you can move on. The type information is erased when the code is compiled to JavaScript.
+
+        toast("AN UNEXPECTED ERROR HAS OCCURED",{//Toast for unexpected error.
+            description: 'Please Check Your Inputs and Try Again.',
+        })
+            return {
+                ...prevState,
+                error: "Unexpeted Error Occured",
+                status: 'Error'
+            }
+            //Also, if something goes wrong, we'll show a shadcn toast, that'll be a alert component saying something wen't wrong.
+            //see sonner.tsx component that we created to make a toast component.(NOW GO TO THE LAYOUT.TSX OF THE PROJECT FOLDER AND RIGHT BELOW CHILDEREN JUST RENDER THAT TOASTER COMPONENT AND COME BACK HERE TO SEE HOW WE USE IT.)
+
+        } 
+    }
+
+    
+
+    const [state, formAction, isPending] = useActionState(handleFormSubmit,{//pass this formAction as the action of the form
+        error: "",
+        status: "INITIAL"
+    },"")
 
 
     //npx shadcn@latest add input textarea toast, if toast component is depricated then use sonner component.
@@ -38,10 +135,10 @@ const StartupForm = () => {
     return (
     //as soon as we define some action, it's gonna ask us to make this a client component.
     // why? cuz this ain't a server action!!!, this is a form action like we're gonna take data from the user and send it through post.
-    <form action={()=>{}} className='startup-form rounded-4xl py-4'>
+    <form action={formAction} className='startup-form rounded-4xl py-4'>
         <div>
             <label htmlFor="title" className='startup-form_label'>TITLE</label>
-            <Input id='title' name='startup' className='startup-form_input' required placeholder='Startup Title'/>
+            <Input id='title' name='title' className='startup-form_input' required placeholder='Startup Title'/>
             {errors.title && <p className='startup-form_errors'>{errors.title}</p>
             /*IF ERROR/ERROR.TITLE EXISTS THEN RENDER THE P TAG, & RETURNS THE LAST TRUTHY when both are true, || RETURNS THE LAST FALSY when all are false ,
             BOTH EVALUATE FROM LEFT TO RIGHT, IF ALL ARE FALSE THEN & RETURNS THE LEFT MOST(FIRST FALSY) VALUE, AND || RETURNS THE FIRST TRUTHY WHEN ALL ARE TRUE.*/}
@@ -49,7 +146,7 @@ const StartupForm = () => {
         <div>
             <label htmlFor="description" className='startup-form_label'>DESCRIPTION</label>
             {/* npx shadcn@latest add textarea */}
-            <Textarea id='' name='' className='startup-form_textarea' required placeholder='Startup Description'/>
+            <Textarea id='description' name='description' className='startup-form_textarea' required placeholder='Startup Description'/>
             {errors.description && <p className='startup-form_errors'>{errors.description}</p>}
         </div>
         <div>
@@ -86,7 +183,10 @@ const StartupForm = () => {
             {isPending ? "Submitting...":"Submit your Pitch"}
             <Send className='size-6 ml-2'/>
         </Button>
-        {/* now the ui of the form is completed, so next let's focus on submitting the form!!! (in next commit) */}
+        {/* now the ui of the form is completed, so next let's focus on submitting the form!!! (in next commit),
+         and we'll submit the form using react's latest useActionState hook, this hook allows you to update the state based on the result of form action
+         it even uses a isPending state that can be used to show a loading indicator while the action is being performed.
+         this hook is better and will replace the react's formstate hook, see screenshot 8. remove the isPending above and write the useActionState hook from react. */}
     </form>
   )
 }
