@@ -13,3 +13,12 @@ export function formatDate(date: string){
     year: 'numeric'
   })
 }
+
+// export function parse({error, status}: {error: Error, status: string}): boolean{
+// return true;
+// }
+//can not do return 1;, or return "Hi" as they are not boolean.
+
+export function parseServerActionResponse<T>(response: T) {
+return JSON.parse(JSON.stringify(response));
+}

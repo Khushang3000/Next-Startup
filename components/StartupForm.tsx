@@ -16,6 +16,7 @@ import { formSchema } from '@/lib/validation'
 import {z} from 'zod';
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { create_pitch } from '@/lib/actions'
 const StartupForm = () => {
     
     //here useState uses array destructuring, [errors, seterrors], as it returns a array or to be more specific, a tuple.
@@ -50,25 +51,32 @@ const StartupForm = () => {
             // CLIENT'S BROWSER.
            
            
-            // const result = await createIdea(prevState, formData, pitch)//WE'LL IMPLEMENT THIS LATER.
-            //console.log(result)
+            //USING THE CREATE PITCH UTILITY FUNCTION.
+            const result = await create_pitch(prevState, formData, pitch)//IMPLEMENTED, ALSO SEE THE IF CONDITION BELOW,
+            //NOW IF WE SUBMIT A FORM, IT'LL REDIRECT US TO A PAGE, AND IF WE GO TO SANITY STUDIO AND CHECK IT THEN IT'LL BE VISIBLE THERE(THIS NEWLY CREATED STARTUP)
+            //but why did we get redirected to the 404 page?
+            //well cuz in the url you'd see undefined like /startup/undefined.
+            //why is that let's see. cuz the resule has an ._id not .id
+            //so now it should be fixed, but for now let's just go to the home page and you'll see the startup right there.
+            //also now make sure to delete the fake startups and authors from sanity studio.
+            //in next commit we'll see bug fixing and much more.
 
             //we'll show a shadcn toast, that'll be a alert component saying something wen't wrong.
             //see sonner.tsx component that we created to make a toast component.(NOW GO TO THE LAYOUT.TSX OF THE PROJECT FOLDER AND RIGHT BELOW CHILDEREN JUST RENDER THAT TOASTER COMPONENT AND COME BACK HERE TO SEE HOW WE USE IT.)
 
-            // if(result.status === "SUCCESS"){//showing toast for success.
-            //     toast("Success",{
-            //         description: 'Your Startup Pitch has been created successfully!!',
-            //     })
+            if(result.status === "SUCCESS"){//showing toast for success.
+                toast("Success",{
+                    description: 'Your Startup Pitch has been created successfully!!',
+                })
 
 
-            //     //Once that successful submission happens we wanna redirect the user to that startup details page.
-            //     //for that we'll use useRouter
+                //Once that successful submission happens we wanna redirect the user to that startup details page.
+                //for that we'll use useRouter
 
-            //     router.push(`/startup/${result.id}`)//since we're showing toast, we'll redirect the user to his startup page.
-            // }
+                router.push(`/startup/${result._id}`)//since we're showing toast, we'll redirect the user to his startup page.
+            }
 
-            // return result;
+            return result;
         } catch (error) {
             if(error instanceof z.ZodError){
             
@@ -187,6 +195,10 @@ const StartupForm = () => {
          and we'll submit the form using react's latest useActionState hook, this hook allows you to update the state based on the result of form action
          it even uses a isPending state that can be used to show a loading indicator while the action is being performed.
          this hook is better and will replace the react's formstate hook, see screenshot 8. remove the isPending above and write the useActionState hook from react. */}
+
+         {/* NOW TO SUBMIT OUR STARTUP WE'LL HAVE TO DO THIS USING A MUTATION THROUGH A SERVER ACTION, THEY CAN BE DEFINED USING THE REACT'S "use server" directive,
+         we can place them at the top of an async function or mark the entire file as "use server" and in that file you can write multiple server actions (this won't be a component but a .ts file where all of our actions go, and then we just need to import those async actions in the component file where we will use them)
+         so just create a new file in lib/actions.ts */}
     </form>
   )
 }
