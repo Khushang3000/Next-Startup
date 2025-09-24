@@ -60,6 +60,67 @@ const StartupForm = () => {
             //so now it should be fixed, but for now let's just go to the home page and you'll see the startup right there.
             //also now make sure to delete the fake startups and authors from sanity studio.
             //in next commit we'll see bug fixing and much more.
+            //to make sure when 1000s of users use our app it doesn't break for them, we'll use sentry
+            //sentry is an application monitoring software
+            //so go ahead and create an account.
+            //install sentry choose nextjs
+            //now in our package.json overrides: add next: $next this ensures that sentry uses the same version of nextjs.
+            // npx @sentry/wizard@latest -i nextjs --saas --org personal-01v --project javascript-nextjs
+            //also remember to change your project name to NEXT-STARTUP INstead of javascript-nextjs
+            //now say no to route sentry requests in the browser? as it could increase the server bill
+            //yes, enable react annotations
+            //yes to tracing
+            //sentry session replay- yep
+            //yes to example page
+            //yes to using cicd tool? we'll use vercel later on
+            //now it'll give you a sentry auth token which you can copy. 
+            //yes continue
+
+            //now run the dev server go to localhost3000
+            //add sentry-example-page to the url, this page was created by sentry for us.(disable your browser's adblocker for once. or just don't run it on brave, run it on edge or something)
+            //click on throw sample error purposfully just to check if sentry is watching over the app and alerting us.
+            //now you'll see that error has been sent to sentry so let's go to sentry dashboard and see that error or you'll see a bar at the bottom of your install sentry page
+            //it'll say error recieved and just click on take me to my error. just see the issues tab on the navbar on the left.
+            //now you'll see the error, you can go into it's details by clicking on it, you can see where is it comming from.
+            //rn we can fix that error by fixing this code or right in our browser.
+            //BUT THE PROBLEM OCCURS WHEN A USER BREAKS YOUR APPLICATION. AND NO MATTER HOW MUCH YOU TEST, USERS WILL ALWAYS END UP BREAKING IT.
+            //just imagine how hectic it is to tell them to open their console and send us a ss of what they're seeing. and it'll be so hard to fix that error.
+            //so for that sentry simplifies this by helping us to track and resolve those errors.
+            //by giving you event highlights of how the error has happened.
+            //it gives you info like on which page the error has happened, see screenshot 9, you'll see info like what kind of error it is, where it happened(development)
+            //from which api, and much more.
+            //if you scroll down further, it'll show you that which line of code is throwing the error.
+            //and if you scroll down further below in the contexts section it'll show you some cool stuff like which browser client used, 
+            //it's version, which os is client using
+            //how much memory is the app using in his browser, how much memory is free and much moreeee.
+            //you can see the full trace preview just above the context section, and see exactly how the error has happened.
+            //AND HERE'S THE REALLY COOL THING, FOR SENTRY FRONTEND ERROR,
+            //if you click on the error once more and go there,
+            //YOU CAN ACTUALLY CHECK OUT THE SESSION REPLAY, I.E EXACTLY WHAT THE USER DID WHEN HE ENCOUNTERED THE ERROR!!!!!! 
+            //LIKE A SCREEN RECORDING!!!!!!! 
+            //but for that we'll have to manually create a sentry.client.ts for our app and see the proper session replay setup there on sentry's page.
+            //soo see that, and now go to sentry, make sure to click on the FRONTEND ISSUE AS ON BACKEND ISSUES WE DO NOT GET SESSION REPLAYS, SO YEAH.
+            //NOW THAT YOU HAVE CREATED THE CLIENT.TS AND CONFIGURED IT TO SHOW SESSION REPLAY AS WELL AS SHOW THE TEXT AND MEDIA ON THE USER'S PAGE:
+            // maskAllText: false,
+            //   blockAllMedia: false,
+            //YEAAH YOU CAN DO THAT.WE CAN SEE EXACTLY WHAT THEY WERE DOING AND WE CAN ALSO SEE WHAT HAPPENED IN THE CONSOLE.
+            //ALONG WITH REPLAYS, THERE'S ALSO PERFORMANCE.(SEE IN THE NAVBAR.) IT ALLOWS YOU TO CHECK HOW QUICKLY CERTAIN PAGES ARE LOADING FOR YOUR USER.
+            //ofc, just like replay we gotta setup performance metrics as well.
+            //GO TO INSIGHTS(performance). THERE YOU CAN SEE MANY OTHER THINGS AS WELL.
+
+            //we can also create a user feedback for our app, where the good users that see a bug they can report that bug on their own to us.
+            //you can see that under the issues section.
+            //click on setup now and you'll get how to configure the sdk.
+            //in sentry client.config.ts we can add integration.
+            // ###########################################################
+            //HI ME FROM THE FUTURE, YOU DON'T NEED TO CREATE A CLIENT.TS FOR SENTRY, INSTEAD THE CODE YOU WILL WRITE GOES ININSTRUMENTATION.TS
+            //WHICH SENTRY GENERATED FOR US, SO THERE YOU ADD INTREGATIONS LIKE REPLAY AND USERFEEDBACK.
+            //SO YOU CAN JUST DELETE THE SENTRY CLIENT.CONFIG.TS, IT'S OF NO USE AT ALL.
+            // ###########################################################
+            //now when you send a bug report, you can go to sentry dashboard, and see that bug report and there you can even see the replay(which is even before the user clicked on submit a bug)
+            //oh and btw whenever there's a bug/error in your app or some user broke your app, you also get an email from sentry about that.
+
+            //now the next thing we'll do is create the user profile route. in next commit.
 
             //we'll show a shadcn toast, that'll be a alert component saying something wen't wrong.
             //see sonner.tsx component that we created to make a toast component.(NOW GO TO THE LAYOUT.TSX OF THE PROJECT FOLDER AND RIGHT BELOW CHILDEREN JUST RENDER THAT TOASTER COMPONENT AND COME BACK HERE TO SEE HOW WE USE IT.)
