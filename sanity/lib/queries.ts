@@ -89,3 +89,33 @@ export const AUTHOR_BY_GITHUB_ID_QUERY = defineQuery(`
     bio
     }
     `)//_id is the db AUTHOR id, and id is the GITHUB id.
+
+    //author by his own id. in sanity's database, and ofc sanity uses _id in the database by default ofc.
+    export const AUTHOR_BY_ID_QUERY = defineQuery(`
+    *[_type == "author" && _id == $id][0]{
+    _id,
+    id, 
+    name, 
+    username,
+    email,
+    image,
+    bio
+    }
+    `)
+
+
+export const STARTUPS_BY_AUTHOR_QUERY = defineQuery(
+    `
+    *[_type == "startup" && author._ref == $id] | order(_createdAt desc)
+    {
+        _id,
+        title,
+        slug, 
+        _createdAt,
+        author -> {_id, name, image, bio, },    //what properties we want from author.
+        views,
+        description,
+        category,
+        image
+    }`
+)

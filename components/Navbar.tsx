@@ -2,6 +2,8 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { auth, signIn, signOut } from '@/auth'
+import { BadgePlus, LogOut } from 'lucide-react'
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 
 
 
@@ -36,15 +38,27 @@ const Navbar = async () => { //we can make this function an async function cuz t
             */}
             { session && session.user ? (
               <>
-              <Link href="/startup/create"><span>Create</span></Link>
+              {/* we'll make things mobile responsive now, we'll make the create hidden on small devices, and add a logout icon as well to the page that goes in logout button, and also add a badgeplus icon in create 
+              and also instead of user's full name let's just show user's image, for that shadcn has a component npx shadcn@latest add avatar*/}
+              <Link href="/startup/create"><span className='max-sm:hidden'>Create</span>
+              <BadgePlus className='size-6 sm:hidden' />
+              
+              </Link>
               <form action={async ()=>{
                 "use server";
                 await signOut( {redirectTo: "/"})}}>
-                <button type='submit'>Logout</button>
+                <button type='submit'>
+                  <span className='max-sm:hidden'>LogOut</span>
+                  <LogOut className='size-6 sm:hidden text-red-500' />
+                </button>
                 
               </form>
               <Link href={`/user/${session?.user?.id}`}>
-                <span>{session?.user?.name}</span>
+                {/* <span>{session?.user?.name}</span> , RENDERING AVATART INSTEAD, rendering ""empty strings if the image and name aren't available, avatarfallback if image is not there.*/}
+                <Avatar className='size-10'>
+                  <AvatarImage src={session?.user?.image || ''} alt={session?.user?.name || ''}/>
+                  <AvatarFallback>AV</AvatarFallback>
+                </Avatar>
               </Link>
               </>
             ):(

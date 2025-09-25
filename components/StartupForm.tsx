@@ -121,6 +121,7 @@ const StartupForm = () => {
             //oh and btw whenever there's a bug/error in your app or some user broke your app, you also get an email from sentry about that.
 
             //now the next thing we'll do is create the user profile route. in next commit.
+            //root/user/[id]/page.tsx, go.
 
             //we'll show a shadcn toast, that'll be a alert component saying something wen't wrong.
             //see sonner.tsx component that we created to make a toast component.(NOW GO TO THE LAYOUT.TSX OF THE PROJECT FOLDER AND RIGHT BELOW CHILDEREN JUST RENDER THAT TOASTER COMPONENT AND COME BACK HERE TO SEE HOW WE USE IT.)

@@ -1,10 +1,11 @@
 import React from 'react'
-import { formatDate } from '@/lib/utils'
+import { cn, formatDate } from '@/lib/utils'
 import { EyeIcon } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from './ui/button'
 import { Author, Startup } from '@/sanity/types'
+import { Skeleton } from './ui/skeleton'
 
 //Omit- Construct a type with the properties of T except for those in type K.
 export type StartupCardType = Omit<Startup,"author"> & {author? : Author}//author will be optional, and it will be of type Author.
@@ -111,7 +112,7 @@ With group, you can cascade hover/focus/active states from parent → children.
           </div>
           <Link href={`/user/${author?._id}`}>
           {/* nextjs won't allow us to render the image as it doesn't know if we trust this placehold.co link, so we gotta set it to allow in nextjsconfig.ts */}
-                  <Image src="https://placehold.co/48x48" alt='Placeholder' width={48} height={48} className='rounded-full' />
+                  <Image src={author?.image!} alt={author?.name!} width={48} height={48} className='rounded-full' />
           </Link>
         </div>
         {/* let's create another link for details */}
@@ -145,5 +146,15 @@ With group, you can cascade hover/focus/active states from parent → children.
     </li>
   )
 }
+
+export const StartupCardSkeleton = ()=>(
+  <>
+    {[0,1,2,3,4].map((index: number)=>(//as our numbers are just indecies so we can skip the indecies parameter in the map function. and we can just use that in the cn function as index.
+      <li key={cn('skeleton', index)}>
+        <Skeleton className='startup-card_skeleton' />
+      </li>
+    ))}
+  </>
+)//now we just simply use this in our user details page.
 
 export default StartupCard
