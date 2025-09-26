@@ -2,7 +2,7 @@
 //if you see the startup card's details section you'll realise that that details leads you to this page.
 import { formatDate } from '@/lib/utils';
 import { client } from '@/sanity/lib/client';
-import { STARTUP_BY_ID_QUERY } from '@/sanity/lib/queries';
+import { PLAYLIST_BY_SLUG_QUERY, STARTUP_BY_ID_QUERY } from '@/sanity/lib/queries';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -11,6 +11,7 @@ import React, { Suspense } from 'react'
 import MarkdownIt from 'markdown-it';
 import { Skeleton } from '@/components/ui/skeleton';
 import View from '@/components/View';
+import StartupCard, { StartupCardType } from '@/components/StartupCard';
 
 const md = MarkdownIt();
 
@@ -62,6 +63,12 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     //markdown-it for parsing the markdown values:
     const parsedContent = md.render(post?.pitch || "")//parse the markdown content if it's there, or just return an empty string if it doesn't exist.
     //random note: to use experimental ppr, you should install latest version of canary, which means that run npm i next@canary.
+
+
+    const {select: editorPosts} = await client.fetch(PLAYLIST_BY_SLUG_QUERY, {slug: "editor-picks"});
+    //destructuring select(i.e all the startups in that playlist,) and renaming select to editorPosts
+    //now go below to the editor recommended startups section in the component.
+
   return (
     <>
     <section className="pink_container !min-h-[1px]">
@@ -114,9 +121,33 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
         }
       </div>
       <hr className="divider" />
-      {/* TODO: */}
       {/* Editor Recommended Startups */}
-
+      {editorPosts?.length > 0 && (
+        <div className="max-w-4xl mx-auto">
+          <p className="text-30-semibold">
+            Editor picks
+          </p>
+          <ul className="mt-7 card_grid-sm">
+            {editorPosts.map((post: StartupCardType, index: number)=>(
+              <StartupCard key={index} post={post} />
+            ))}
+          </ul>
+            {/* NOW THIS WORKS FINE, but we have a little issue, and that is that we gotta be aware of two different data fetching patterns, parallel and sequential
+            
+            With sequential data fetching, requests in a route are dependent on each other and therefore create waterfalls. There may be cases where you want this pattern because one fetch depends on the result of the other, or you want a condition to be satisfied before the next fetch to save resources. However, this behavior can also be unintentional and lead to longer loading times.
+            
+            With parallel data fetching, requests in a route are eagerly initiated and will load data at the same time. This reduces client-server waterfalls and the total time it takes to load data.
+            
+            basically in sequential, one is happening after the previous one is finished, and in parallel, multiple go at once and some go sequentially.
+            what we did just now was sequential. as we're first fetching the data about the post and only then we're fetching the editor posts.
+            but the time to fetch the data will be increased as it will be the sum of both the requests, this is best if the second request depends on the first one.
+            //REMEMBER: I'M TALKING ABOUT THE BOTH CLIENT.FETCH CALLS.
+            BUT AS you know that these two fetches are completely independent, so we can take advantage of these mordern systems that are capable of handling multiple requests at the same time(concurrently)
+            we do it like:
+            const [result1, result2] = await Promise.all([url1, url2])
+            //like this you can achieve parallel data fetching and you can pass as many arguments as you want. */}
+        </div>
+      )}
 
       {/* Everything we've rendered so far was static content, now time for ppr.
       now we'll develop a section of this same page which needs realtime updates, so it'll be completely dynamic

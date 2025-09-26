@@ -43,7 +43,8 @@ const page = async ({params}: {params: Promise<{id: string}>}) => {//extracting 
                     <UserStartups id={id}/>
                     </Suspense>
                 </ul>
-                {/* NOW IN NEXT COMMIT WE'LL ADD ANOTHER GREATE FEATURE */}
+                {/* NOW IN NEXT COMMIT WE'LL ADD ANOTHER GREATE FEATURE, it's basically that we're implementing different category of different startups
+                for that we'll create a new schema, playlist.ts, go there. */}
             </div>
         </section>
     </>
