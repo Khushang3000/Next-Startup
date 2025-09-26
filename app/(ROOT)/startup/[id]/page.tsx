@@ -77,7 +77,10 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     //you can also go and modify the shadcn components by going into the components/ui folder and see the css, and other cool properties.
     //now when deploying a large application such as this one, we might face some errors, mainly typescript, so we can disable those errors for build environment
     //head over to nextconfig.ts, and typescript: {
-    // ignoreBuildErrors: true;
+    // ignoreBuildErrors: true
+    // }
+    //similarly eslint: {
+    // ignoreDuringBuild: true
     // }
 
     if(!post) return notFound();
