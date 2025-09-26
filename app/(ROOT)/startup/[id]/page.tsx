@@ -75,6 +75,10 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     const [post, {select: editorPosts}] = await Promise.all([client.fetch(STARTUP_BY_ID_QUERY, {id}), client.fetch(PLAYLIST_BY_SLUG_QUERY, {slug: "editor-picks"}) ])
     //two independent requests are being made concurrently.
     //you can also go and modify the shadcn components by going into the components/ui folder and see the css, and other cool properties.
+    //now when deploying a large application such as this one, we might face some errors, mainly typescript, so we can disable those errors for build environment
+    //head over to nextconfig.ts, and typescript: {
+    // ignoreBuildErrors: true;
+    // }
 
     if(!post) return notFound();
 
