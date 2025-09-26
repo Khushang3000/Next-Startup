@@ -49,7 +49,7 @@ const View =async ({id}:{id: string}) => {
     await writeClient.patch(id).set({views: totalViews+1}).commit();//calling the writeClient action here.
   })
   return (
-    <div className='view-container'>
+    <div className='view-container !fixed !mb-15'>
         {/* these top and right from div below are offsets, i.e that element will be absolute-the element is taken out of the normal document flow and positioned relative to the nearest ancestor with relative (or absolute/fixed/sticky).
         top-2 → offset 2 units (0.5rem by default in Tailwind) from the top edge of the parent.
 

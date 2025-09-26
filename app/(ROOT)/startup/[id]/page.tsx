@@ -72,7 +72,7 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
 
 
     //Parallel Data Fetching:
-    const [post, {select: editorPosts}] = await Promise.all([client.fetch(STARTUP_BY_ID_QUERY, {id}), client.fetch(PLAYLIST_BY_SLUG_QUERY, {slug: "editor-picks"}) ])
+    const [post, {select: editorPosts}] = await Promise.all([client.fetch(STARTUP_BY_ID_QUERY, {id}), client.fetch(PLAYLIST_BY_SLUG_QUERY, {slug: "best-pitches"}) ])//best pitches is our slug of the playlist that we made, rn we're only making one playlist.
     //two independent requests are being made concurrently.
     //you can also go and modify the shadcn components by going into the components/ui folder and see the css, and other cool properties.
     //now when deploying a large application such as this one, we might face some errors, mainly typescript, so we can disable those errors for build environment
@@ -84,6 +84,8 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     // }
     //we also gotta add the actual deployed url to our sanity project's cors origin for letting user's to interact with our backend and api.
     //through sanity.com->projects
+    //THERE'S ALSO SOMETHING THAT WE NEED TO FIX, THE PLAYLISTS, SO RUN PROJECT ON LOCALHOST, GO TO STUDIO AND CREATE A NEW FIELD PLAYLISTS.
+    //WE CAN NAME IT ANYTHING LIKE BEST PITCHES
 
     if(!post) return notFound();
 
@@ -97,7 +99,7 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
      <p className="sub-heading !max-w-5xl ">{post.description}</p>
     </section>
     <section className="h-[20vh] w-[60vw] justify-self-center mt-1">
-      <Image src={post.image} alt="Thumbnail" className='w-[80vw] h-[60vh] rounded-xl' />
+      <img src={post.image} alt="Thumbnail" className='w-[80vw] h-[60vh] rounded-xl' />
       <div className="space-y-5 mt-10 max-w-4xl mx-auto">
         <div className="flex-between gap-1">
           <Link href={`/user/${post.author?._id}`} className='flex gap-2 items-center mb-3'>{/**Link to author details page. */}
