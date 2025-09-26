@@ -24,6 +24,7 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     const id = (await params).id; //btw this id will be a hashed or encrypted string not plain n.o
     //now we can take this id and fetch all of the details about that startup. 
 
+    console.log("Error with params")
     //let's go to studio then vision, there we can modify our query a bit to now not fetch all the startups, but rather fetch a single startup's details
     
     // it'll look like this below, where a type is startup and _id == $id(this $id is the id that is passed through params and in sanity studio's vision you can pass this param in the params tab), and [0] means give me only the element that matches that query.
@@ -73,6 +74,7 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
 
     //Parallel Data Fetching:
     const [post, {select: editorPosts}] = await Promise.all([client.fetch(STARTUP_BY_ID_QUERY, {id}), client.fetch(PLAYLIST_BY_SLUG_QUERY, {slug: "best-pitches"}) ])//best pitches is our slug of the playlist that we made, rn we're only making one playlist.
+    console.log("Error with Promise.all or concurrent fetching")
     //two independent requests are being made concurrently.
     //you can also go and modify the shadcn components by going into the components/ui folder and see the css, and other cool properties.
     //now when deploying a large application such as this one, we might face some errors, mainly typescript, so we can disable those errors for build environment
@@ -88,8 +90,9 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     //WE CAN NAME IT ANYTHING LIKE BEST PITCHES
 
     if(!post) return notFound();
-
+    console.log("Error with post not found")
     const parsedContent = md.render(post?.pitch || "")
+    console.log("Error with parsedContent")
 
   return (
     <>
