@@ -127,7 +127,7 @@ export default async function Home({searchParams}:{searchParams: Promise<{query:
       font-medium low n many more decide the thickness of the form. */}
       <p className="sub-heading !max-w-3xl ">Submit Ideas, Vote on pitches and get noticed in Virtual Competitions</p>
       {/* now let's create another component called SearchForm.tsx. */}
-      <SearchForm query={query}></SearchForm>
+      <SearchForm query={query} />
       {/* now go to searchForm and accept this query as a prop. 
       */}
 

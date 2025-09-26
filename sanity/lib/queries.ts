@@ -21,7 +21,7 @@ export const STARTUP_QUERY = defineQuery(
     //so let's make a new folder within the app's (root) folder name it startup,
     //an then make another dynamic route [id] and within it create a page.tsx
     `
-    *[_type == "startup" && defined(slug.current) && !defined($search) || title match search || category match $search || author->name match search] | order(_createdAt desc)
+    *[_type == "startup" && defined(slug.current) && !defined($search) || title match $search || category match $search || author->name match $search] | order(_createdAt desc)
     {
         _id,
         title,

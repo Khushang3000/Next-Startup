@@ -53,21 +53,32 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
 
     
     //isr
-    const post = await client.fetch(STARTUP_BY_ID_QUERY, {id})//here id is sent through params.
-    if(!post){
-      return notFound();//from next/navigation
-    }
+    // const post = await client.fetch(STARTUP_BY_ID_QUERY, {id})//here id is sent through params.
+    // if(!post){
+    //   return notFound();//from next/navigation
+    // }
     //now if all checks are passed, then we can render something like posts.title below in the component
 
 
     //markdown-it for parsing the markdown values:
-    const parsedContent = md.render(post?.pitch || "")//parse the markdown content if it's there, or just return an empty string if it doesn't exist.
+    // const parsedContent = md.render(post?.pitch || "")//parse the markdown content if it's there, or just return an empty string if it doesn't exist.
     //random note: to use experimental ppr, you should install latest version of canary, which means that run npm i next@canary.
 
 
-    const {select: editorPosts} = await client.fetch(PLAYLIST_BY_SLUG_QUERY, {slug: "editor-picks"});
+    // const {select: editorPosts} = await client.fetch(PLAYLIST_BY_SLUG_QUERY, {slug: "editor-picks"});
     //destructuring select(i.e all the startups in that playlist,) and renaming select to editorPosts
     //now go below to the editor recommended startups section in the component.
+
+
+
+    //Parallel Data Fetching:
+    const [post, {select: editorPosts}] = await Promise.all([client.fetch(STARTUP_BY_ID_QUERY, {id}), client.fetch(PLAYLIST_BY_SLUG_QUERY, {slug: "editor-picks"}) ])
+    //two independent requests are being made concurrently.
+    //you can also go and modify the shadcn components by going into the components/ui folder and see the css, and other cool properties.
+
+    if(!post) return notFound();
+
+    const parsedContent = md.render(post?.pitch || "")
 
   return (
     <>
