@@ -82,6 +82,8 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     //similarly eslint: {
     // ignoreDuringBuild: true
     // }
+    //we also gotta add the actual deployed url to our sanity project's cors origin for letting user's to interact with our backend and api.
+    //through sanity.com->projects
 
     if(!post) return notFound();
 
