@@ -10,8 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 const Navbar = async () => { //we can make this function an async function cuz this is a server component. you couldn't do this in client componenet.
 
   const session = await auth()
-
-  console.log(session?.user?.id)
   
   return (
     <header className='px-5 py-3 bg-white shadow-sm font-work-sans'>
@@ -54,7 +52,7 @@ const Navbar = async () => { //we can make this function an async function cuz t
                 </button>
                 
               </form>
-              <Link href={`/user/${session?.user?.id}`}>
+              <Link href={`/user/${session?.id}`}>
                
                 {/* <span>{session?.user?.name}</span> , RENDERING AVATART INSTEAD, rendering ""empty strings if the image and name aren't available, avatarfallback if image is not there.*/}
                 <Avatar className='size-10'>
