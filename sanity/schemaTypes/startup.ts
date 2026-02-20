@@ -1,5 +1,4 @@
 import { defineField, defineType } from "sanity";
-import { author } from "./author";
 
 export const startup = defineType({
     name: "startup",

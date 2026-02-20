@@ -111,8 +111,12 @@ With group, you can cascade hover/focus/active states from parent → children.
             </Link>
           </div>
           <Link href={`/user/${author?._id}`}>
-          {/* nextjs won't allow us to render the image as it doesn't know if we trust this placehold.co link, so we gotta set it to allow in nextjsconfig.ts */}
-                  <Image src={author?.image!} alt={author?.name!} width={48} height={48} className='rounded-full' />
+            {/* Render next/image only when author and image exist to avoid unsafe non-null assertions */}
+            {author?.image && author?.name ? (
+              <Image src={author.image} alt={author.name} width={48} height={48} className='rounded-full' />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-gray-200" />
+            )}
           </Link>
         </div>
         {/* let's create another link for details */}
@@ -121,7 +125,11 @@ With group, you can cascade hover/focus/active states from parent → children.
                     {description}
                   </p>
                   {/* right here below this p tag we could add an image, but in this case we don't have to. we can also use a regular html image */}
-                  <img src={image} alt="placeholder" className='startup-card_img' />
+                  {image ? (
+                    <Image src={image} alt={title || 'startup image'} width={600} height={360} className='startup-card_img' />
+                  ) : (
+                    <div className='startup-card_img bg-gray-100 w-full h-40' />
+                  )}
         </Link>
 
         {/* footer of the card */}

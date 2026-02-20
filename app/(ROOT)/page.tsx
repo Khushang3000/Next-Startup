@@ -1,11 +1,11 @@
-import Image from "next/image";
+// Image not used in this file
 import SearchForm from "../../components/SearchForm";
 import StartupCard from "@/components/StartupCard";
 import { STARTUP_QUERY } from "@/sanity/lib/queries";
 // import { client } from "@/sanity/lib/client";
 import { StartupCardType } from "@/components/StartupCard";
 import { sanityFetch, SanityLive} from "@/lib/live";
-import { auth } from "@/auth";
+import { auth } from "../../auth";
 
 export default async function Home({searchParams}:{searchParams: Promise<{query: string}>}) {
   const query = (await searchParams).query; //now that we have the query, we can pass it into the searchForm as a prop.
@@ -87,7 +87,7 @@ export default async function Home({searchParams}:{searchParams: Promise<{query:
     const session = await auth();
     // console.log(session.id)// if you try to use this now, then ts will give you an error that session is possibly null
     //to fix that we can create a typescript declaration file within our Next-startup folder. next-auth.d.ts see it and come back.
-    console.log(session?.id);//now typescript knows that session has an id, but if you put the import in the typedec file then it'd know that there's id on session
+    if (process.env.NODE_ENV === 'development') console.log(session?.id);
     //but then you'd get errors in auth.ts as then your declarations would've overridden the SESSION AND JWT so then you'd get errors there,
     // so the best thing is to just put a session? rather than directly doing session.
     //rn you might not see the id's value, as when we were implementing this functionality we were left logged in so, to fix that logout and then login again.
@@ -144,7 +144,7 @@ export default async function Home({searchParams}:{searchParams: Promise<{query:
           here in this ul, we'll map over the posts, later on we'll directly fetch those posts from sanity.
           but for the time being we'll just make a local array posts. */}
           {posts?.length>0 ?
-          posts.map((post: StartupCardType, index: number)=>(
+          posts.map((post: StartupCardType)=>(
             //using index as the key is usually not a good practice, so we'll just use post?._id, and we'll pass the post itself as a prop as well. so go there and accept it.
             <StartupCard key={post?._id} post={post}/>
           )):

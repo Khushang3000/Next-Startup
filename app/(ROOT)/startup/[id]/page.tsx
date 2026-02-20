@@ -13,7 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import View from '@/components/View';
 import StartupCard, { StartupCardType } from '@/components/StartupCard';
 
-const md = MarkdownIt();
+const md = MarkdownIt({ html: false });
 
 
 
@@ -24,7 +24,7 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     const id = (await params).id; //btw this id will be a hashed or encrypted string not plain n.o
     //now we can take this id and fetch all of the details about that startup. 
 
-    console.log("Error with params")
+    // params checked
     //let's go to studio then vision, there we can modify our query a bit to now not fetch all the startups, but rather fetch a single startup's details
     
     // it'll look like this below, where a type is startup and _id == $id(this $id is the id that is passed through params and in sanity studio's vision you can pass this param in the params tab), and [0] means give me only the element that matches that query.
@@ -74,7 +74,7 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
 
     //Parallel Data Fetching:
     const [post, {select: editorPosts}] = await Promise.all([client.fetch(STARTUP_BY_ID_QUERY, {id}), client.fetch(PLAYLIST_BY_SLUG_QUERY, {slug: "best-pitches"}) ])//best pitches is our slug of the playlist that we made, rn we're only making one playlist.
-    console.log("Error with Promise.all or concurrent fetching")
+    // concurrent fetches performed
     //two independent requests are being made concurrently.
     //you can also go and modify the shadcn components by going into the components/ui folder and see the css, and other cool properties.
     //now when deploying a large application such as this one, we might face some errors, mainly typescript, so we can disable those errors for build environment
@@ -90,9 +90,7 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
     //WE CAN NAME IT ANYTHING LIKE BEST PITCHES
 
     if(!post) return notFound();
-    console.log("Error with post not found")
     const parsedContent = md.render(post?.pitch || "")
-    console.log("Error with parsedContent")
 
   return (
     <>
@@ -102,12 +100,22 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
      <p className="sub-heading !max-w-5xl ">{post.description}</p>
     </section>
     <section className="h-[20vh] w-[60vw] justify-self-center mt-1">
-      <img src={post.image} alt="Thumbnail" className='w-[80vw] h-[60vh] rounded-xl' />
+      {post.image ? (
+        <div className="w-[80vw] h-[60vh] rounded-xl overflow-hidden">
+          <Image src={post.image} alt="Thumbnail" width={1280} height={720} className='object-cover w-full h-full rounded-xl' />
+        </div>
+      ) : (
+        <div className='w-[80vw] h-[60vh] rounded-xl bg-gray-100' />
+      )}
       <div className="space-y-5 mt-10 max-w-4xl mx-auto">
         <div className="flex-between gap-1">
           <Link href={`/user/${post.author?._id}`} className='flex gap-2 items-center mb-3'>{/**Link to author details page. */}
           <div className="relative w-16 h-16 rounded-full overflow-hidden drop-shadow-lg drop-shadow-amber-600">
-          <Image src={post.author.image} alt="Avatar" fill className='object-cover' />
+            {post.author?.image ? (
+              <Image src={post.author.image} alt={post.author.name || 'Avatar'} fill className='object-cover' />
+            ) : (
+              <div className="w-full h-full bg-gray-200" />
+            )}
           {/* nextjs has some problems specifically with the image tag, as it overrides some of your own styles so, it's better to render that image tag within a div and provide styling to that div
           now you can provide object-cover classname to that Image tag to make sure that image keeps the aspect ratio and fills the container(there are other properties like object-fit contain wrap nowrap overflow that you can learn about later somewhere)
           also, either you can provide height and width properties on the Image tag, to give custom height and width, i prefer to provide fill properties as it makes the 
@@ -154,7 +162,7 @@ const page = async ({params}:{params: Promise<{id: string}>}) => {
           </p>
           <ul className="mt-7 card_grid-sm">
             {editorPosts.map((post: StartupCardType, index: number)=>(
-              <StartupCard key={index} post={post} />
+              <StartupCard key={post._id || (post.slug && post.slug.current) || index} post={post} />
             ))}
           </ul>
             {/* NOW THIS WORKS FINE, but we have a little issue, and that is that we gotta be aware of two different data fetching patterns, parallel and sequential

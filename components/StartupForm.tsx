@@ -6,7 +6,7 @@
 import React, { useActionState } from 'react'
 import { Input } from './ui/input'
 // import { Toaster } from './ui/sonner'//(1)
-import { Toaster } from 'sonner'//(2)
+// removed unused Toaster import
 import { useState } from 'react'
 import { Textarea } from './ui/textarea'
 import MDEditor from '@uiw/react-md-editor'
@@ -29,7 +29,7 @@ const StartupForm = () => {
     const router = useRouter();//comming from next-navigation. this is the app router and we should always use this router instead of the router(for new nextjs projects) from next-router or someplace else as that is older.
     
     //for form validation we'll use ZOD, a simple ts first schema validation with static type interference, to implement it create a new file in the lib folder->validation.ts
-    const handleFormSubmit = async (prevState: any, formData: FormData)=>{
+    const handleFormSubmit = async (prevState: { error?: string; status?: string }, formData: FormData)=>{
         try {
             const formValues = {
                 title: formData.get("title") as string,
@@ -42,13 +42,7 @@ const StartupForm = () => {
             }
 
             await formSchema.parseAsync(formValues)//taking the formValues and compare them with the formSchema and see if they match.
-            //             parseAsync(formValues) runs validation:
-            // It checks if formValues matches the shape and rules of formSchema.
-            // If everything is valid ✅ → it resolves and gives you the typed, validated data back.
-            // If anything is invalid ❌ → it throws a ZodError.
-
-            console.log(formValues);//logging to see if we even get the form values.REMEMBER SINCE THIS IS A CLIENT SIDE COMPONENT, THE CONSOLE LOG WILL BE SHOWN ON THE 
-            // CLIENT'S BROWSER.
+            // parseAsync(formValues) runs validation and throws a ZodError when invalid.
            
            
             //USING THE CREATE PITCH UTILITY FUNCTION.
@@ -186,7 +180,7 @@ const StartupForm = () => {
 
     
 
-    const [state, formAction, isPending] = useActionState(handleFormSubmit,{//pass this formAction as the action of the form
+    const [, formAction, isPending] = useActionState(handleFormSubmit,{//pass this formAction as the action of the form
         error: "",
         status: "INITIAL"
     },"")

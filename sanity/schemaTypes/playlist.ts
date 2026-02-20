@@ -1,5 +1,4 @@
 import { defineField, defineType } from "sanity";
-import { author } from "./author";
 
 export const playlist = defineType({
     name: "playlist",//add this in index.ts as well.

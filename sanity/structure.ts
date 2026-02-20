@@ -1,5 +1,4 @@
 import type {StructureResolver} from 'sanity/structure'
-import { author } from './schemaTypes/author'
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>

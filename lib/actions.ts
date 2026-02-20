@@ -5,7 +5,7 @@ import { parseServerActionResponse } from "./utils";
 import slugify from "slugify"
 import { writeClient } from "@/sanity/lib/write-client";
 
-export const create_pitch = async (state: any, form: FormData, pitch: string, )=>{
+export const create_pitch = async (state: { error?: string; status?: string }, form: FormData, pitch: string, )=>{
 //we also need to get the info about the user who's submitting it
     const session = await auth()//through this we can get the info about the active user.
 
@@ -95,7 +95,7 @@ export const create_pitch = async (state: any, form: FormData, pitch: string, )=
 
         })
     } catch (error) {
-        console.log(error)
+        if (process.env.NODE_ENV === 'development') console.error(error)
         return parseServerActionResponse({error: JSON.stringify(error), status:"ERROR"})
     }
 

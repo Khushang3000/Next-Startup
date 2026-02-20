@@ -6,15 +6,7 @@ import SearchFormReset from './SearchFormReset';
 import Form from 'next/form'
 import { Search } from 'lucide-react';
 
-const reset = () =>{
-    const form = document.querySelector(".search-form") as HTMLFormElement;
-
-    //if form exists then we'll reset the form.
-    if(form) form.reset()
-
-    //now still there's one problem, even tho our SearchForm is a server side component, but the reset button and the onClick is still client side stuff    
-    //so we gotta extract it into a different component., so take the button and place it in the SearchFormReset component, as well as this reset function for us to call it there.
-}
+// reset logic moved into SearchFormReset component (client-side)
 const SearchForm = ({query}: {query?: string}) => {
      //remember we're in a server component, so we should not use useState.
     //  Now we're directly using query without to search, now when you load the page, type something in the input box, click search, this query will be appended as a string to the url
