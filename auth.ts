@@ -5,19 +5,27 @@ import { client } from "./sanity/lib/client"
 import { AUTHOR_BY_GITHUB_ID_QUERY } from "./sanity/lib/queries"
 import { writeClient } from "./sanity/lib/write-client"
 
+// Ensure GitHub provider is configured with env vars (safe defaults to avoid runtime crash)
+const githubProvider = GitHub({
+  clientId: process.env.GITHUB_ID ?? "",
+  clientSecret: process.env.GITHUB_SECRET ?? "",
+})
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  providers: [GitHub],
+  providers: [githubProvider],
   callbacks: {
     // After successful provider sign-in
     async signIn({ user, profile }) {
       const name = user?.name ?? "";
       const email = user?.email ?? "";
       const image = user?.image ?? "";
-      const githubId = profile?.id;
+      // GitHub profile id can be string; sanity schema stores `id` as a number — coerce safely
+      const rawGithubId = profile?.id;
+      const githubId = rawGithubId ? Number(rawGithubId) : undefined;
       const login = profile?.login ?? "";
       const bio = profile?.bio ?? "";
 
-      if (!githubId) return true;
+      if (!githubId || Number.isNaN(githubId)) return true;
 
       const existingUser = await client.withConfig({ useCdn: false }).fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id: githubId });
 
@@ -39,8 +47,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // Include sanity author id in the JWT
     async jwt({ token, account, profile }) {
       if (account && profile) {
-        const user = await client.withConfig({ useCdn: false }).fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id: profile?.id });
-        token.id = user?._id;
+        const rawGithubId = profile?.id;
+        const githubId = rawGithubId ? Number(rawGithubId) : undefined;
+        if (githubId && !Number.isNaN(githubId)) {
+          const user = await client.withConfig({ useCdn: false }).fetch(AUTHOR_BY_GITHUB_ID_QUERY, { id: githubId });
+          token.id = user?._id;
+        }
       }
       return token;
     },

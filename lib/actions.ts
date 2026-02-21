@@ -65,7 +65,7 @@ export const create_pitch = async (state: { error?: string; status?: string }, f
             category,
             image: link,
             slug:{
-                _type: slug,
+                _type: "slug",
                 current: slug
             },
             author: {

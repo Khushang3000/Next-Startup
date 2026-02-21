@@ -9,7 +9,8 @@ export const writeClient = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true, 
+  // For write client, disable CDN to ensure immediate consistency
+  useCdn: false,
   token: token
 })
 
